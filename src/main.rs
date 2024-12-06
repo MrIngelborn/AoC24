@@ -13,6 +13,6 @@ fn main() {
     let day = args.day;
     match day {
         1 => day1::main(),
-        _ => println!("No such day: {}", day)
+        _ => println!("No such day: {}", day),
     }
 }
