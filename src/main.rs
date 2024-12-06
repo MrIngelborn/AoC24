@@ -1,25 +1,18 @@
+mod day1;
 use clap::Parser;
 
 #[derive(Parser, Debug)]
 #[clap(author = "Marcus Ingelborn", version, about)]
-/// Application configuration
 struct Args {
-    /// whether to be verbose
-    #[arg(short = 'v')]
-    verbose: bool,
-
-    /// an optional name to greet
-    #[arg()]
-    name: Option<String>,
+    #[arg(short, long)]
+    day: i32,
 }
 
 fn main() {
     let args = Args::parse();
-    if args.verbose {
-        println!("DEBUG {args:?}");
+    let day = args.day;
+    match day {
+        1 => day1::main(),
+        _ => println!("No such day: {}", day)
     }
-    println!(
-        "Hello {} (from AoC24)!",
-        args.name.unwrap_or("world".to_string())
-    );
 }
