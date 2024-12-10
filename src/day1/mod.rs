@@ -6,6 +6,8 @@ pub fn main() {
     println!("DAY 1!!!");
     let task1_res = task1(INPUT_PATH);
     println!("Task1: {}", task1_res);
+    let task2_res = task2(INPUT_PATH);
+    println!("Task2: {}", task2_res);
 }
 
 fn task1(path: &str) -> i32 {
@@ -40,6 +42,27 @@ fn sort(array: Vec<i32>) -> Vec<i32> {
     sorted.clone_from(&array);
     sorted.sort();
     sorted
+}
+
+fn number_of_instances(array: &Vec<i32>, element: i32) -> usize {
+    array.iter()
+        .filter(|x| {**x == element})
+        .count()
+}
+
+fn similarity_score(array: &Vec<i32>, element: i32) -> i32 {
+    number_of_instances(array, element) as i32 * element
+}
+fn similarity_score_sum(left_array: Vec<i32>, right_array: Vec<i32>) -> i32 {
+    left_array.iter()
+        .map(|x| similarity_score(&right_array, *x))
+        .sum()
+}
+
+fn task2(path: &str) -> i32 {
+    let file_data = read_file(path);
+    let arrays = parse_file_data(file_data);
+    similarity_score_sum(arrays.0,arrays.1)
 }
 
 fn diff(a: i32, b: i32) -> i32 {
@@ -132,4 +155,36 @@ mod tests {
         assert_eq!([3, 4, 2, 1, 3, 3].to_vec(), res.0);
         assert_eq!([4, 3, 5, 3, 9, 3].to_vec(), res.1);
     }
+
+    #[test]
+    fn number_of_instances_should_count_instances_of_given_element() {
+        let array = [1,1,1,2,2,3].to_vec();
+        assert_eq!(3, number_of_instances(&array, 1));
+        assert_eq!(2, number_of_instances(&array, 2));
+        assert_eq!(1, number_of_instances(&array, 3));
+        assert_eq!(0, number_of_instances(&array, 4));
+    }
+
+    #[test]
+    fn similarity_score_should_multiply_numer_of_instances_with_element_value() {
+        let array = [1,1,2,2,2,3,3,3,3].to_vec();
+        assert_eq!(1*2, similarity_score(&array, 1));
+        assert_eq!(2*3, similarity_score(&array, 2));
+        assert_eq!(3*4, similarity_score(&array, 3));
+    }
+
+    #[test]
+    fn similarity_score_sum_should_sum_all_similarity_score_values_of_elements_in_left_array() {
+        let left_array = [3, 4, 2, 1, 3, 3].to_vec();
+        let right_array = [4, 3, 5, 3, 9, 3].to_vec();
+        assert_eq!(31, similarity_score_sum(left_array, right_array));
+    }
+
+    #[test]
+    fn task2_should_parse_arrays_and_calculate_the_similarity_score_sum() {
+        let res = task2(TEST_INPUT_PATH);
+        assert_eq!(31, res)
+    }
+
+
 }
